@@ -1,0 +1,55 @@
+Sub Multiple_year_stock_data():
+For Each ws In Worksheets
+ws.Activate
+    Range("I1:L1").Value = Array("Ticker Symbol", "Total Stock Volume", "Yearly Change", "Percent Change")
+    
+    lastRow = Cells(Rows.Count, "A").End(xlUp).Row
+    srow = 2
+    total_Volume = 0
+    open_Price = 0
+    close_Price = 0
+    'end - start
+    '(end - start) / start
+    
+    For i = 2 To lastRow
+        total_Volume = total_Volume + Range("G" & i).Value
+        
+        'Starting Row
+        If Cells(i, 1).Value <> Cells(i - 1, 1).Value Then
+        Cells(srow, 9).Value = Cells(i, 1).Value
+        open_Price = Range("C" & i).Value
+        End If
+        
+        'Ending Row
+        If Cells(i, 1).Value <> Cells(i + 1, 1).Value Then
+            close_Price = Range("F" & i).Value
+            yearly_Change = close_Price - open_Price
+            Cells(srow, 10).Value = total_Volume
+            Cells(srow, 11).Value = yearly_Change
+            
+        If yearly_Change > 0 Then
+            Cells(srow, 11).Interior.ColorIndex = 4
+        ElseIf yearly_Change < 0 Then
+            Cells(srow, 11).Interior.ColorIndex = 3
+        End If
+            
+             
+         If open_Price = 0 Then
+            open_Price = 1
+         
+        End If
+        
+        percent_Change = yearly_Change / open_Price
+        
+        Cells(srow, 12).Value = percent_Change
+        Cells(srow, 12).NumberFormat = "0.00%"
+        
+        total_Volume = 0
+        srow = srow + 1
+            
+        End If
+        
+    Next i
+    
+Next ws
+End Sub
